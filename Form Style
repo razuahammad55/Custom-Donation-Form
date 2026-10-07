@@ -1,0 +1,230 @@
+/* ======================
+   1. DYNAMIC BRANDING TOKENS
+   ====================== */
+
+:root {
+  /* Global Geometry */
+  --df-border-radius: 8px;
+
+  /* Amount Buttons (.amt-btn) */
+  --amt-btn-bg-normal: #f7fafc;
+  --amt-btn-text-normal: #2d3748;
+  --amt-btn-bg-hover: #edf2f7;
+  --amt-btn-text-hover: #2d3748;
+  --amt-btn-bg-active: #ebf8ff;
+  --amt-btn-text-active: #2b6cb0;
+  --amt-btn-border-active: #3182ce;
+
+  /* Payment Gateway Options (.gateway-row) */
+  --gateway-bg-normal: #ffffff;
+  --gateway-text-normal: #2d3748;
+  --gateway-bg-hover: #f7fafc;
+  --gateway-text-hover: #2d3748;
+  --gateway-bg-active: #ebf8ff;
+  --gateway-text-active: #2b6cb0;
+  --gateway-border-active: #3182ce;
+
+  /* Primary Submit Button (.donation-submit-trigger) */
+  --submit-btn-bg-normal: #3182ce;
+  --submit-btn-text-normal: #ffffff;
+  --submit-btn-bg-hover: #2b6cb0;
+  --submit-btn-text-hover: #ffffff;
+}
+
+/* ===========================
+   2. CUSTOM DONATION FORM STYLES
+   ============================ */
+
+.styled-donation-container {
+    /max-width: 550px;
+    margin: 0 auto;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: calc(var(--df-border-radius) + 4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.form-section-label {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #4a5568;
+    margin-bottom: 12px;
+}
+
+/* --- Amount Buttons Grid & Strict Active Override --- */
+.amount-btn-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* Prepending body + container forces border-radius over Elementor/Theme defaults */
+body .styled-donation-container .amt-btn {
+    padding: 12px 16px !important;
+    background: var(--amt-btn-bg-normal) !important;
+    color: var(--amt-btn-text-normal) !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: var(--df-border-radius) !important;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+body .styled-donation-container .amt-btn:hover {
+    background: var(--amt-btn-bg-hover) !important;
+    color: var(--amt-btn-text-hover) !important;
+    border-color: #cbd5e0 !important;
+}
+
+/* Forced Active State with !important to defeat theme overrides */
+body .styled-donation-container .amt-btn.active {
+    background: var(--amt-btn-bg-active) !important;
+    color: var(--amt-btn-text-active) !important;
+    border-color: var(--amt-btn-border-active) !important;
+}
+
+/* --- Input Fields (Strict White Background & Shared Radius) --- */
+.input-amount-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.currency-prefix {
+    position: absolute;
+    left: 14px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #718096;
+    z-index: 2;
+}
+
+.currency-suffix {
+    position: absolute;
+    right: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #a0aec0;
+    z-index: 2;
+}
+
+body .styled-donation-container input[type="text"],
+body .styled-donation-container input[type="email"],
+body .styled-donation-container input[type="number"],
+body .styled-donation-container input[type="tel"],
+body .styled-donation-container input[type="file"],
+body .styled-donation-container textarea,
+body .styled-donation-container select {
+    background-color: #ffffff !important;
+    color: #2d3748 !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: var(--df-border-radius) !important;
+    box-shadow: none !important;
+    outline: none !important;
+    box-sizing: border-box !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.input-amount-wrapper input[type="number"] {
+    width: 100%;
+    padding: 12px 50px 12px 30px !important;
+    font-size: 18px;
+    font-weight: 600;
+    transition: border-color 0.2s ease;
+}
+
+.input-amount-wrapper input[type="number"]:focus {
+    border-color: #3182ce !important;
+}
+
+.donor-name-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.donor-full-row input,
+.donor-name-row input {
+    width: 100%;
+    padding: 12px 14px !important;
+    font-size: 15px;
+    transition: border-color 0.2s ease;
+}
+
+.donor-full-row input:focus,
+.donor-name-row input:focus {
+    border-color: #3182ce !important;
+}
+
+/* --- Gateway Options State System --- */
+.gateway-selection-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+body .styled-donation-container .gateway-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--gateway-bg-normal) !important;
+    color: var(--gateway-text-normal) !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: var(--df-border-radius) !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+body .styled-donation-container .gateway-row:hover {
+    background: var(--gateway-bg-hover) !important;
+    color: var(--gateway-text-hover) !important;
+    border-color: #cbd5e0 !important;
+}
+
+body .styled-donation-container .gateway-row.active {
+    background: var(--gateway-bg-active) !important;
+    color: var(--gateway-text-active) !important;
+    border-color: var(--gateway-border-active) !important;
+}
+
+.gateway-row input[type="radio"] {
+    margin-right: 12px;
+    border-radius: 50% !important;
+    cursor: pointer;
+}
+
+.gateway-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: inherit !important; /* Forces text to adopt parent active/hover color */
+}
+
+/* --- Submit Button State System --- */
+body .styled-donation-container .donation-submit-trigger {
+    width: 100%;
+    padding: 16px !important;
+    background: var(--submit-btn-bg-normal) !important;
+    color: var(--submit-btn-text-normal) !important;
+    border: none !important;
+    border-radius: var(--df-border-radius) !important;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer !important;
+    transition: all 0.2s ease;
+}
+
+body .styled-donation-container .donation-submit-trigger:hover {
+    background: var(--submit-btn-bg-hover) !important;
+    color: var(--submit-btn-text-hover) !important;
+}
