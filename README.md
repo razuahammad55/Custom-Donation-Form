@@ -24,9 +24,9 @@ The forms and their interactive JavaScript logic are rendered using custom short
   ```text
   [custom_onetime_donation_form]
 
-* **One-Time Donation Form:**
+* **Monthly Donation Form:**
   ```text
-  [custom_onetime_donation_form]
+  [custom_monthly_donation_form]
   
 ---
 
