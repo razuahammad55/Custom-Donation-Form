@@ -23,11 +23,11 @@ The forms and their interactive JavaScript logic are rendered using custom short
 * **One-Time Donation Form:**
   ```text
   [custom_onetime_donation_form]
-```
 
-  * **One-Time Donation Form:**
+* **One-Time Donation Form:**
   ```text
   [custom_onetime_donation_form]
+  
 ---
 
 ## Configuration (`wp-config.php`)
