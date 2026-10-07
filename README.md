@@ -28,21 +28,27 @@ The form and its interactive JavaScript logic are rendered using the custom shor
 To keep sensitive API keys secure and avoid hardcoding values inside your code snippets, define the following constants inside your site's `wp-config.php` file:
 
 ```php
+
 // =========================================================================
-// CUSTOM MONTHLY DONATION FORM GATEWAY CREDENTIALS
+// CUSTOM MONTHLY DONATION FORM GATEWAY CREDENTIALS (TEST / SANDBOX MODE)
 // =========================================================================
 
-// Stripe API Credentials
-define( 'DONATION_STRIPE_SECRET', 'sk_live_XXXXXXXXXXXXXXXXXXXXXXXX' );
-define( 'DONATION_STRIPE_PUBLIC', 'pk_live_XXXXXXXXXXXXXXXXXXXXXXXX' );
-define( 'DONATION_SANDBOX_MODE', false );
+// Enable Sandbox Mode
+define( 'DONATION_SANDBOX_MODE', true );
 
-// PayPal REST API Credentials
-define( 'DONATION_PAYPAL_CLIENT_ID', 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' );
+// Stripe Test API Credentials (starts with sk_test_ and pk_test_)
+define( 'DONATION_STRIPE_SECRET', 'sk_test_XXXXXXXXXXXXXXXXXXXXXXXX' );
+define( 'DONATION_STRIPE_PUBLIC', 'pk_test_XXXXXXXXXXXXXXXXXXXXXXXX' );
+
+// PayPal Sandbox REST API Credentials
+define( 'DONATION_PAYPAL_CLIENT_ID', 'sb-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' );
 define( 'DONATION_PAYPAL_CLIENT_SECRET', 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' );
-define( 'DONATION_PAYPAL_PLAN_ID', 'P-XXXXXXXXXXXXXXXXXXX' );
 
-define( 'DONATION_PAYPAL_EMAIL', 'hello@example.com' );
+// PayPal Sandbox Subscription Plan ID (Created in Sandbox Developer Dashboard)
+define( 'DONATION_PAYPAL_PLAN_ID', 'P-SANDBOX_XXXXXXXXXXXXX' );
+
+// PayPal Sandbox Business Account Email
+define( 'DONATION_PAYPAL_EMAIL', 'sandbox-business@example.com' );
 
 ```
 
