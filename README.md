@@ -16,11 +16,18 @@ A lightweight, cache-resilient custom PHP recurring donation form snippet for Wo
 
 ## 4. How to Display the Form on the Frontend
 
-The form and its interactive JavaScript logic are rendered using the custom shortcode below:
+The forms and their interactive JavaScript logic are rendered using custom shortcodes. You can place these shortcodes anywhere in WordPress—such as inside an Elementor Shortcode widget, a Gutenberg Shortcode block, the Classic Editor, or directly within theme PHP templates.
 
-```text
-[custom_monthly_donation_form]
+### Shortcodes
+
+* **One-Time Donation Form:**
+  ```text
+  [custom_onetime_donation_form]
 ```
+
+  * **One-Time Donation Form:**
+  ```text
+  [custom_onetime_donation_form]
 ---
 
 ## Configuration (`wp-config.php`)
