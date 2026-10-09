@@ -46,154 +46,170 @@ add_action( 'template_redirect', function() {
     $stripe_secret_key = defined( 'DONATION_STRIPE_SECRET' ) ? DONATION_STRIPE_SECRET : ''; 
     $is_sandbox_mode   = defined( 'DONATION_SANDBOX_MODE' )  ? DONATION_SANDBOX_MODE  : false;
 
+   
+	
     // ROUTE A: STRIPE SUBSCRIPTION
-    if ( 'stripe' === $chosen_gateway ) {
-        if ( empty( $stripe_secret_key ) ) {
-            wp_die( 'Stripe Configuration Error. Secret key is missing in wp-config.php.' );
-        }
-
-        $price_response = wp_remote_post( 'https://api.stripe.com/v1/prices', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $stripe_secret_key,
-                'Content-Type'  => 'application/x-www-form-urlencoded',
-            ],
-            'body' => [
-                'currency'            => 'usd',
-                'unit_amount'         => round( $custom_amount * 100 ),
-                'recurring[interval]' => 'month',
-                'product_data[name]'  => 'Monthly Recurring Donation',
-            ],
-        ]);
-
-        if ( is_wp_error( $price_response ) ) {
-            wp_die( 'Stripe Price Registration Error: ' . esc_html( $price_response->get_error_message() ) );
-        }
-
-        $price_data = json_decode( wp_remote_retrieve_body( $price_response ), true );
-        $price_id   = isset( $price_data['id'] ) ? sanitize_text_field( $price_data['id'] ) : '';
-
-        if ( empty( $price_id ) ) {
-            wp_die( 'Stripe Configuration Error. Please verify your Stripe Secret Key.' );
-        }
-
-        $session_response = wp_remote_post( 'https://api.stripe.com/v1/checkout/sessions', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $stripe_secret_key,
-                'Content-Type'  => 'application/x-www-form-urlencoded',
-            ],
-            'body' => [
-                'payment_method_types[0]' => 'card',
-                'mode'                    => 'subscription',
-                'customer_email'          => $email,
-                'line_items[0][price]'    => $price_id,
-                'line_items[0][quantity]' => 1,
-                'success_url'             => esc_url_raw( home_url( '/donation-success/' ) ),
-                'cancel_url'              => esc_url_raw( home_url( '/donation-canceled/' ) ),
-                'metadata[donor_name]'    => sanitize_text_field( trim( $first_name . ' ' . $last_name ) ),
-            ],
-        ]);
-
-        if ( is_wp_error( $session_response ) ) {
-            wp_die( 'Stripe Checkout Session Error: ' . esc_html( $session_response->get_error_message() ) );
-        }
-
-        $session_data = json_decode( wp_remote_retrieve_body( $session_response ), true );
-        $checkout_url = isset( $session_data['url'] ) ? esc_url_raw( $session_data['url'] ) : '';
-
-        if ( ! empty( $checkout_url ) ) {
-            wp_redirect( $checkout_url );
-            exit;
-        } else {
-            wp_die( 'Stripe failed to return a valid checkout URL.' );
-        }
+	if ( 'stripe' === $chosen_gateway ) {
+    if ( empty( $stripe_secret_key ) ) {
+        wp_die( 'Stripe Configuration Error. Secret key is missing in wp-config.php.' );
     }
+
+    $price_response = wp_remote_post( 'https://api.stripe.com/v1/prices', [
+        'headers' => [
+            'Authorization' => 'Bearer ' . $stripe_secret_key,
+            'Content-Type'  => 'application/x-www-form-urlencoded',
+        ],
+        'body' => [
+            'currency'            => 'usd',
+            'unit_amount'         => round( $custom_amount * 100 ),
+            'recurring[interval]' => 'month',
+            'product_data[name]'  => 'Monthly Recurring Donation',
+        ],
+    ]);
+
+    if ( is_wp_error( $price_response ) ) {
+        wp_die( 'Stripe Price Registration Error: ' . esc_html( $price_response->get_error_message() ) );
+    }
+
+    $price_data = json_decode( wp_remote_retrieve_body( $price_response ), true );
+    $price_id   = isset( $price_data['id'] ) ? sanitize_text_field( $price_data['id'] ) : '';
+
+    if ( empty( $price_id ) ) {
+        wp_die( 'Stripe Configuration Error. Please verify your Stripe Secret Key.' );
+    }
+
+    $session_response = wp_remote_post( 'https://api.stripe.com/v1/checkout/sessions', [
+        'headers' => [
+            'Authorization' => 'Bearer ' . $stripe_secret_key,
+            'Content-Type'  => 'application/x-www-form-urlencoded',
+        ],
+        'body' => [
+            'payment_method_types[0]' => 'card',
+            'mode'                    => 'subscription',
+            'customer_email'          => $email,
+            'line_items[0][price]'    => $price_id,
+            'line_items[0][quantity]' => 1,
+
+            // FIXED 1: Append ?session_id={CHECKOUT_SESSION_ID} so CPT logger triggers
+            'success_url'             => home_url( '/donation-success/?session_id={CHECKOUT_SESSION_ID}' ),
+            'cancel_url'              => esc_url_raw( home_url( '/donation-canceled/' ) ),
+
+            // FIXED 2: Structure metadata fields cleanly for easier CPT extraction
+            'metadata[form_first_name]' => sanitize_text_field( $first_name ),
+            'metadata[form_last_name]'  => sanitize_text_field( $last_name ),
+            'metadata[donation_type]'   => 'Monthly',
+        ],
+    ]);
+
+    if ( is_wp_error( $session_response ) ) {
+        wp_die( 'Stripe Checkout Session Error: ' . esc_html( $session_response->get_error_message() ) );
+    }
+
+    $session_data = json_decode( wp_remote_retrieve_body( $session_response ), true );
+    $checkout_url = isset( $session_data['url'] ) ? esc_url_raw( $session_data['url'] ) : '';
+
+    if ( ! empty( $checkout_url ) ) {
+        wp_redirect( $checkout_url );
+        exit;
+    } else {
+        wp_die( 'Stripe failed to return a valid checkout URL.' );
+    }
+}
     
     // ROUTE B: PAYPAL SUBSCRIPTION
-    if ( 'paypal' === $chosen_gateway ) {
-        $client_id     = defined( 'DONATION_PAYPAL_CLIENT_ID' ) ? DONATION_PAYPAL_CLIENT_ID : '';
-        $client_secret = defined( 'DONATION_PAYPAL_CLIENT_SECRET' ) ? DONATION_PAYPAL_CLIENT_SECRET : '';
-        $plan_id       = defined( 'DONATION_PAYPAL_PLAN_ID' ) ? DONATION_PAYPAL_PLAN_ID : '';
+	if ( 'paypal' === $chosen_gateway ) {
+    $client_id     = defined( 'DONATION_PAYPAL_CLIENT_ID' ) ? DONATION_PAYPAL_CLIENT_ID : '';
+    $client_secret = defined( 'DONATION_PAYPAL_CLIENT_SECRET' ) ? DONATION_PAYPAL_CLIENT_SECRET : '';
+    $plan_id       = defined( 'DONATION_PAYPAL_PLAN_ID' ) ? DONATION_PAYPAL_PLAN_ID : '';
 
-        if ( empty( $client_id ) || empty( $client_secret ) ) {
-            wp_die( 'PayPal API Configuration Error. Client ID or Secret is missing in wp-config.php.' );
-        }
+    if ( empty( $client_id ) || empty( $client_secret ) ) {
+        wp_die( 'PayPal API Configuration Error. Client ID or Secret is missing in wp-config.php.' );
+    }
 
-        // Fixed endpoint URL typo
-        $api_base = $is_sandbox_mode ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com';
+    $api_base = $is_sandbox_mode ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com';
 
-        $auth_response = wp_remote_post( $api_base . '/v1/oauth2/token', array(
-            'headers' => array(
-                'Authorization' => 'Basic ' . base64_encode( $client_id . ':' . $client_secret ),
-                'Content-Type'  => 'application/x-www-form-urlencoded',
+    $auth_response = wp_remote_post( $api_base . '/v1/oauth2/token', array(
+        'headers' => array(
+            'Authorization' => 'Basic ' . base64_encode( $client_id . ':' . $client_secret ),
+            'Content-Type'  => 'application/x-www-form-urlencoded',
+        ),
+        'body' => 'grant_type=client_credentials',
+    ));
+
+    if ( is_wp_error( $auth_response ) ) {
+        wp_die( 'PayPal Authentication Error: ' . esc_html( $auth_response->get_error_message() ) );
+    }
+
+    $auth_data    = json_decode( wp_remote_retrieve_body( $auth_response ), true );
+    $access_token = isset( $auth_data['access_token'] ) ? $auth_data['access_token'] : '';
+
+    if ( empty( $access_token ) ) {
+        wp_die( 'Failed to retrieve PayPal access token. Check your Client ID and Secret.' );
+    }
+
+    $quantity = max( 1, (int) round( $custom_amount ) );
+
+    // Build return URL carrying donor form inputs
+    $return_url = add_query_arg( array(
+        'fname' => urlencode( $first_name ),
+        'lname' => urlencode( $last_name ),
+        'email' => urlencode( $email ),
+        'amt'   => urlencode( number_format( $custom_amount, 2, '.', '' ) ),
+    ), home_url( '/donation-success/' ) );
+
+    $subscription_payload = array(
+        'plan_id'    => $plan_id,
+        'quantity'   => (string) $quantity,
+        'subscriber' => array(
+            'email_address' => $email,
+            'name'          => array(
+                'given_name' => $first_name,
+                'surname'    => $last_name,
             ),
-            'body' => 'grant_type=client_credentials',
-        ));
+        ),
+        'application_context' => array(
+            'brand_name'          => get_bloginfo( 'name' ),
+            'locale'              => 'en-US',
+            'shipping_preference' => 'NO_SHIPPING',
+            'user_action'         => 'SUBSCRIBE_NOW',
+            'return_url'          => esc_url_raw( $return_url ),
+            'cancel_url'          => esc_url_raw( home_url( '/donation-canceled/' ) ),
+        ),
+    );
 
-        if ( is_wp_error( $auth_response ) ) {
-            wp_die( 'PayPal Authentication Error: ' . esc_html( $auth_response->get_error_message() ) );
-        }
+    $sub_response = wp_remote_post( $api_base . '/v1/billing/subscriptions', array(
+        'headers' => array(
+            'Authorization' => 'Bearer ' . $access_token,
+            'Content-Type'  => 'application/json',
+            'Accept'        => 'application/json',
+        ),
+        'body' => json_encode( $subscription_payload ),
+    ));
 
-        $auth_data    = json_decode( wp_remote_retrieve_body( $auth_response ), true );
-        $access_token = isset( $auth_data['access_token'] ) ? $auth_data['access_token'] : '';
+    if ( is_wp_error( $sub_response ) ) {
+        wp_die( 'PayPal Subscription Creation Error: ' . esc_html( $sub_response->get_error_message() ) );
+    }
 
-        if ( empty( $access_token ) ) {
-            wp_die( 'Failed to retrieve PayPal access token. Check your Client ID and Secret.' );
-        }
+    $sub_data = json_decode( wp_remote_retrieve_body( $sub_response ), true );
 
-        $quantity = max( 1, (int) round( $custom_amount ) );
-
-        $subscription_payload = array(
-            'plan_id'    => $plan_id,
-            'quantity'   => (string) $quantity,
-            'subscriber' => array(
-                'email_address' => $email,
-                'name'          => array(
-                    'given_name' => $first_name,
-                    'surname'    => $last_name,
-                ),
-            ),
-            'application_context' => array(
-                'brand_name'          => get_bloginfo( 'name' ),
-                'locale'              => 'en-US',
-                'shipping_preference' => 'NO_SHIPPING',
-                'user_action'         => 'SUBSCRIBE_NOW',
-                'return_url'          => esc_url_raw( home_url( '/donation-success/' ) ),
-                'cancel_url'          => esc_url_raw( home_url( '/donation-canceled/' ) ),
-            ),
-        );
-
-        $sub_response = wp_remote_post( $api_base . '/v1/billing/subscriptions', array(
-            'headers' => array(
-                'Authorization' => 'Bearer ' . $access_token,
-                'Content-Type'  => 'application/json',
-                'Accept'        => 'application/json',
-            ),
-            'body' => json_encode( $subscription_payload ),
-        ));
-
-        if ( is_wp_error( $sub_response ) ) {
-            wp_die( 'PayPal Subscription Creation Error: ' . esc_html( $sub_response->get_error_message() ) );
-        }
-
-        $sub_data = json_decode( wp_remote_retrieve_body( $sub_response ), true );
-
-        $approve_url = '';
-        if ( isset( $sub_data['links'] ) && is_array( $sub_data['links'] ) ) {
-            foreach ( $sub_data['links'] as $link ) {
-                if ( isset( $link['rel'] ) && 'approve' === $link['rel'] ) {
-                    $approve_url = $link['href'];
-                    break;
-                }
+    $approve_url = '';
+    if ( isset( $sub_data['links'] ) && is_array( $sub_data['links'] ) ) {
+        foreach ( $sub_data['links'] as $link ) {
+            if ( isset( $link['rel'] ) && 'approve' === $link['rel'] ) {
+                $approve_url = $link['href'];
+                break;
             }
         }
-
-        if ( ! empty( $approve_url ) ) {
-            wp_redirect( esc_url_raw( $approve_url ) );
-            exit;
-        } else {
-            wp_die( 'PayPal API failed to yield an approval redirect link.' );
-        }
     }
+
+    if ( ! empty( $approve_url ) ) {
+        wp_redirect( esc_url_raw( $approve_url ) );
+        exit;
+    } else {
+        wp_die( 'PayPal API failed to yield an approval redirect link.' );
+    }
+}
+	
 });
 
 /**
