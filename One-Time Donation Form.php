@@ -46,137 +46,147 @@ add_action( 'template_redirect', function() {
     $stripe_secret_key = defined( 'DONATION_STRIPE_SECRET' ) ? DONATION_STRIPE_SECRET : ''; 
     $is_sandbox_mode   = defined( 'DONATION_SANDBOX_MODE' )  ? DONATION_SANDBOX_MODE  : false;
 
+ 
     // ROUTE A: STRIPE
-    if ( 'stripe' === $chosen_gateway ) {
-        if ( empty( $stripe_secret_key ) ) {
-            wp_die( 'Stripe Configuration Error. Secret key is missing in wp-config.php.' );
-        }
-
-        $session_response = wp_remote_post( 'https://api.stripe.com/v1/checkout/sessions', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $stripe_secret_key,
-                'Content-Type'  => 'application/x-www-form-urlencoded',
-            ],
-            'body' => [
-                'payment_method_types[0]'                        => 'card',
-                'mode'                                           => 'payment',
-                'customer_email'                                 => $email,
-                'line_items[0][price_data][currency]'            => 'usd',
-                'line_items[0][price_data][unit_amount]'         => round( $custom_amount * 100 ),
-                'line_items[0][price_data][product_data][name]' => 'One-Time Donation',
-                'line_items[0][quantity]'                        => 1,
-                'success_url'                                    => esc_url_raw( home_url( '/donation-success/' ) ),
-                'cancel_url'                                     => esc_url_raw( home_url( '/donation-canceled/' ) ),
-                'metadata[donor_name]'                           => sanitize_text_field( trim( $first_name . ' ' . $last_name ) ),
-            ],
-        ]);
-
-        if ( is_wp_error( $session_response ) ) {
-            wp_die( 'Stripe Checkout Session Error: ' . esc_html( $session_response->get_error_message() ) );
-        }
-
-        $session_data = json_decode( wp_remote_retrieve_body( $session_response ), true );
-        $checkout_url = isset( $session_data['url'] ) ? esc_url_raw( $session_data['url'] ) : '';
-
-        if ( ! empty( $checkout_url ) ) {
-            wp_redirect( $checkout_url );
-            exit;
-        } else {
-            wp_die( 'Stripe failed to return a valid checkout URL.' );
-        }
+	if ( 'stripe' === $chosen_gateway ) {
+    if ( empty( $stripe_secret_key ) ) {
+        wp_die( 'Stripe Configuration Error. Secret key is missing in wp-config.php.' );
     }
+
+    $session_response = wp_remote_post( 'https://api.stripe.com/v1/checkout/sessions', [
+        'headers' => [
+            'Authorization' => 'Bearer ' . $stripe_secret_key,
+            'Content-Type'  => 'application/x-www-form-urlencoded',
+        ],
+        'body' => [
+            'payment_method_types[0]'                        => 'card',
+            'mode'                                           => 'payment',
+            'customer_email'                                 => $email,
+            'line_items[0][price_data][currency]'            => 'usd',
+            'line_items[0][price_data][unit_amount]'         => round( $custom_amount * 100 ),
+            'line_items[0][price_data][product_data][name]' => 'One-Time Donation',
+            'line_items[0][quantity]'                        => 1,
+            
+            // FIXED: Added session_id={CHECKOUT_SESSION_ID} to the success_url
+            'success_url'                                    => home_url( '/donation-success/?session_id={CHECKOUT_SESSION_ID}' ),
+            'cancel_url'                                     => esc_url_raw( home_url( '/donation-canceled/' ) ),
+            'metadata[donor_name]'                           => sanitize_text_field( trim( $first_name . ' ' . $last_name ) ),
+        ],
+    ]);
+
+    if ( is_wp_error( $session_response ) ) {
+        wp_die( 'Stripe Checkout Session Error: ' . esc_html( $session_response->get_error_message() ) );
+    }
+
+    $session_data = json_decode( wp_remote_retrieve_body( $session_response ), true );
+    $checkout_url = isset( $session_data['url'] ) ? esc_url_raw( $session_data['url'] ) : '';
+
+    if ( ! empty( $checkout_url ) ) {
+        wp_redirect( $checkout_url );
+        exit;
+    } else {
+        wp_die( 'Stripe failed to return a valid checkout URL.' );
+    }
+}
     
     // ROUTE B: PAYPAL
-    if ( 'paypal' === $chosen_gateway ) {
-        $client_id     = defined( 'DONATION_PAYPAL_CLIENT_ID' ) ? DONATION_PAYPAL_CLIENT_ID : '';
-        $client_secret = defined( 'DONATION_PAYPAL_CLIENT_SECRET' ) ? DONATION_PAYPAL_CLIENT_SECRET : '';
+	if ( 'paypal' === $chosen_gateway ) {
+    $client_id     = defined( 'DONATION_PAYPAL_CLIENT_ID' ) ? DONATION_PAYPAL_CLIENT_ID : '';
+    $client_secret = defined( 'DONATION_PAYPAL_CLIENT_SECRET' ) ? DONATION_PAYPAL_CLIENT_SECRET : '';
 
-        if ( empty( $client_id ) || empty( $client_secret ) ) {
-            wp_die( 'PayPal API Configuration Error. Client ID or Secret is missing in wp-config.php.' );
-        }
+    if ( empty( $client_id ) || empty( $client_secret ) ) {
+        wp_die( 'PayPal API Configuration Error. Client ID or Secret is missing in wp-config.php.' );
+    }
 
-        // Fixed endpoint URL typo
-        $api_base = $is_sandbox_mode ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com';
+    $api_base = $is_sandbox_mode ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com';
 
-        $auth_response = wp_remote_post( $api_base . '/v1/oauth2/token', array(
-            'headers' => array(
-                'Authorization' => 'Basic ' . base64_encode( $client_id . ':' . $client_secret ),
-                'Content-Type'  => 'application/x-www-form-urlencoded',
-            ),
-            'body' => 'grant_type=client_credentials',
-        ));
+    $auth_response = wp_remote_post( $api_base . '/v1/oauth2/token', array(
+        'headers' => array(
+            'Authorization' => 'Basic ' . base64_encode( $client_id . ':' . $client_secret ),
+            'Content-Type'  => 'application/x-www-form-urlencoded',
+        ),
+        'body' => 'grant_type=client_credentials',
+    ));
 
-        if ( is_wp_error( $auth_response ) ) {
-            wp_die( 'PayPal Authentication Error: ' . esc_html( $auth_response->get_error_message() ) );
-        }
+    if ( is_wp_error( $auth_response ) ) {
+        wp_die( 'PayPal Authentication Error: ' . esc_html( $auth_response->get_error_message() ) );
+    }
 
-        $auth_data    = json_decode( wp_remote_retrieve_body( $auth_response ), true );
-        $access_token = isset( $auth_data['access_token'] ) ? $auth_data['access_token'] : '';
+    $auth_data    = json_decode( wp_remote_retrieve_body( $auth_response ), true );
+    $access_token = isset( $auth_data['access_token'] ) ? $auth_data['access_token'] : '';
 
-        if ( empty( $access_token ) ) {
-            wp_die( 'Failed to retrieve PayPal access token. Check your Client ID and Secret.' );
-        }
+    if ( empty( $access_token ) ) {
+        wp_die( 'Failed to retrieve PayPal access token. Check your Client ID and Secret.' );
+    }
 
-        $order_payload = array(
-            'intent' => 'CAPTURE',
-            'purchase_units' => array(
-                array(
-                    'amount' => array(
-                        'currency_code' => 'USD',
-                        'value'         => number_format( $custom_amount, 2, '.', '' ),
-                    ),
-                    'description' => 'One-Time Donation',
+    // Build return URL carrying donor form inputs
+    $return_url = add_query_arg( array(
+        'fname' => urlencode( $first_name ),
+        'lname' => urlencode( $last_name ),
+        'email' => urlencode( $email ),
+        'amt'   => urlencode( number_format( $custom_amount, 2, '.', '' ) ),
+    ), home_url( '/donation-success/' ) );
+
+    $order_payload = array(
+        'intent' => 'CAPTURE',
+        'purchase_units' => array(
+            array(
+                'amount' => array(
+                    'currency_code' => 'USD',
+                    'value'         => number_format( $custom_amount, 2, '.', '' ),
                 ),
+                'description' => 'One-Time Donation',
             ),
-            'payer' => array(
-                'email_address' => $email,
-                'name'          => array(
-                    'given_name' => $first_name,
-                    'surname'    => $last_name,
-                ),
+        ),
+        'payer' => array(
+            'email_address' => $email,
+            'name'          => array(
+                'given_name' => $first_name,
+                'surname'    => $last_name,
             ),
-            'application_context' => array(
-                'brand_name'          => get_bloginfo( 'name' ),
-                'locale'              => 'en-US',
-                'shipping_preference' => 'NO_SHIPPING',
-                'user_action'         => 'PAY_NOW',
-                'return_url'          => esc_url_raw( home_url( '/donation-success/' ) ),
-                'cancel_url'          => esc_url_raw( home_url( '/donation-canceled/' ) ),
-            ),
-        );
+        ),
+        'application_context' => array(
+            'brand_name'          => get_bloginfo( 'name' ),
+            'locale'              => 'en-US',
+            'shipping_preference' => 'NO_SHIPPING',
+            'user_action'         => 'PAY_NOW',
+            'return_url'          => esc_url_raw( $return_url ),
+            'cancel_url'          => esc_url_raw( home_url( '/donation-canceled/' ) ),
+        ),
+    );
 
-        $order_response = wp_remote_post( $api_base . '/v2/checkout/orders', array(
-            'headers' => array(
-                'Authorization' => 'Bearer ' . $access_token,
-                'Content-Type'  => 'application/json',
-                'Accept'        => 'application/json',
-            ),
-            'body' => json_encode( $order_payload ),
-        ));
+    $order_response = wp_remote_post( $api_base . '/v2/checkout/orders', array(
+        'headers' => array(
+            'Authorization' => 'Bearer ' . $access_token,
+            'Content-Type'  => 'application/json',
+            'Accept'        => 'application/json',
+        ),
+        'body' => json_encode( $order_payload ),
+    ));
 
-        if ( is_wp_error( $order_response ) ) {
-            wp_die( 'PayPal Order Creation Error: ' . esc_html( $order_response->get_error_message() ) );
-        }
+    if ( is_wp_error( $order_response ) ) {
+        wp_die( 'PayPal Order Creation Error: ' . esc_html( $order_response->get_error_message() ) );
+    }
 
-        $order_data  = json_decode( wp_remote_retrieve_body( $order_response ), true );
-        $approve_url = '';
+    $order_data  = json_decode( wp_remote_retrieve_body( $order_response ), true );
+    $approve_url = '';
 
-        if ( isset( $order_data['links'] ) && is_array( $order_data['links'] ) ) {
-            foreach ( $order_data['links'] as $link ) {
-                if ( isset( $link['rel'] ) && 'approve' === $link['rel'] ) {
-                    $approve_url = $link['href'];
-                    break;
-                }
+    if ( isset( $order_data['links'] ) && is_array( $order_data['links'] ) ) {
+        foreach ( $order_data['links'] as $link ) {
+            if ( isset( $link['rel'] ) && 'approve' === $link['rel'] ) {
+                $approve_url = $link['href'];
+                break;
             }
         }
-
-        if ( ! empty( $approve_url ) ) {
-            wp_redirect( esc_url_raw( $approve_url ) );
-            exit;
-        } else {
-            wp_die( 'PayPal API failed to yield an approval redirect link.' );
-        }
     }
+
+    if ( ! empty( $approve_url ) ) {
+        wp_redirect( esc_url_raw( $approve_url ) );
+        exit;
+    } else {
+        wp_die( 'PayPal API failed to yield an approval redirect link.' );
+    }
+}
 });
 
 /**
