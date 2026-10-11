@@ -2,35 +2,88 @@
    CDF PLUGIN ADMIN STYLES
    ============================ */
 
-.wrap h1 {
-    font-size: 23px;
+.cdf-admin-wrap {
+    margin-right: 20px;
+}
+
+.cdf-admin-wrap h1 {
+    font-size: 24px;
     font-weight: 600;
     color: #1e293b;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+}
+
+.cdf-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.cdf-metric-box {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .form-table th {
     font-weight: 600;
     color: #334155;
+    width: 240px;
 }
 
 .form-table td input[type="text"],
 .form-table td input[type="password"],
 .form-table td select {
     border-color: #cbd5e1;
-    border-radius: 4px;
-    padding: 6px 10px;
+    border-radius: 6px;
+    padding: 8px 12px;
+    width: 100%;
+    max-width: 450px;
 }
 
 .form-table td input[type="color"] {
     border: 1px solid #cbd5e1;
-    border-radius: 4px;
-    width: 50px;
-    height: 35px;
+    border-radius: 6px;
+    width: 60px;
+    height: 38px;
     cursor: pointer;
     vertical-align: middle;
     background: #fff;
     padding: 2px;
+}
+
+/* Elementor Style Tabs */
+.cdf-style-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 12px;
+}
+
+.cdf-tab-btn {
+    background: #f1f5f9;
+    color: #475569;
+    border: none;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cdf-tab-btn:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.cdf-tab-btn.active {
+    background: #3182ce;
+    color: #ffffff;
 }
 
 .notice.is-dismissible {
