@@ -26,7 +26,6 @@
     margin-bottom: 6px;
 }
 
-/* --- Amount Buttons Grid --- */
 .amount-btn-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -61,7 +60,6 @@ body .styled-donation-container .amt-btn.active {
     border-color: var(--amt-border-active) !important;
 }
 
-/* --- Custom Amount Input Wrapper --- */
 .input-amount-wrapper {
     position: relative;
     display: flex;
@@ -113,7 +111,6 @@ body .styled-donation-container select {
     border-color: #3182ce !important;
 }
 
-/* --- Donor Name & Email Input Rows --- */
 .donor-name-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -138,7 +135,6 @@ body .styled-donation-container select {
     border-color: #3182ce !important;
 }
 
-/* --- Gateway Options (Vertical 2-Line Layout) --- */
 .gateway-selection-block {
     display: grid;
     grid-template-columns: 1fr;
@@ -183,7 +179,6 @@ body .styled-donation-container .gateway-row.active {
     color: inherit !important;
 }
 
-/* --- Submit Button --- */
 body .styled-donation-container .donation-submit-trigger {
     width: 100%;
     padding: 12px 16px !important;
