@@ -3,9 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-/**
- * 1. SECURE BACKEND ROUTER & GATEWAY PROCESSOR
- */
 add_action( 'template_redirect', function() {
     if ( isset( $_POST['onetime_form_token'] ) && 'process_custom_onetime_donation' === $_POST['onetime_form_token'] ) {
         cdf_process_gateway_request( 'one_time' );
@@ -35,7 +32,6 @@ function cdf_process_gateway_request( $type ) {
     $paypal_secret = isset( $settings['paypal_secret'] ) ? trim( $settings['paypal_secret'] ) : '';
     $paypal_plan   = isset( $settings['paypal_plan_id'] ) ? trim( $settings['paypal_plan_id'] ) : '';
 
-    // STRIPE PROCESSING
     if ( 'stripe' === $chosen_gateway ) {
         if ( empty( $stripe_secret ) ) {
             wp_die( 'Stripe Configuration Error: Secret key is missing in plugin settings.' );
@@ -115,7 +111,6 @@ function cdf_process_gateway_request( $type ) {
         wp_die( 'Stripe failed to return checkout URL.' );
     }
 
-    // PAYPAL PROCESSING
     if ( 'paypal' === $chosen_gateway ) {
         if ( empty( $paypal_client ) || empty( $paypal_secret ) ) {
             wp_die( 'PayPal API Configuration Error: Client ID or Secret is missing in plugin settings.' );
@@ -222,9 +217,6 @@ function cdf_process_gateway_request( $type ) {
     }
 }
 
-/**
- * 2. VERIFY PAYMENT STATUS & LOG DONATION ENTRY ON SUCCESS PAGE RETURN
- */
 add_action( 'template_redirect', function() {
     if ( ! is_page( 'donation-success' ) ) {
         return;
@@ -238,7 +230,6 @@ add_action( 'template_redirect', function() {
 
     $transaction_data = array();
 
-    // Stripe Verification
     if ( isset( $_GET['session_id'] ) && ! empty( $_GET['session_id'] ) && ! empty( $stripe_secret ) ) {
         $session_id = sanitize_text_field( wp_unslash( $_GET['session_id'] ) );
 
@@ -274,7 +265,6 @@ add_action( 'template_redirect', function() {
         }
     }
 
-    // PayPal Verification
     if ( ( isset( $_GET['token'] ) || isset( $_GET['subscription_id'] ) ) && ! empty( $paypal_client ) && ! empty( $paypal_secret ) ) {
         $paypal_id = isset( $_GET['subscription_id'] ) ? sanitize_text_field( wp_unslash( $_GET['subscription_id'] ) ) : sanitize_text_field( wp_unslash( $_GET['token'] ) );
 
@@ -345,7 +335,6 @@ add_action( 'template_redirect', function() {
         }
     }
 
-    // Save Entry to CPT with Auto-Increment Serial Number
     if ( ! empty( $transaction_data ) ) {
         $existing_donations = wp_count_posts( 'donation' );
         $published_count    = isset( $existing_donations->publish ) ? intval( $existing_donations->publish ) : 0;
@@ -380,7 +369,6 @@ add_action( 'template_redirect', function() {
 
             wp_update_post( array( 'ID' => $post_id, 'post_title' => trim( $clean_title ) ) );
 
-            // Trigger notification emails action hook
             do_action( 'cdf_donation_logged', $post_id );
         }
     }
