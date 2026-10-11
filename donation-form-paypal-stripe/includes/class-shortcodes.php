@@ -3,9 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-/**
- * Unified Donation Form Shortcode: [donation_form type="one_time"] or [donation_form type="monthly"]
- */
 add_shortcode( 'donation_form', function( $atts ) {
     $atts = shortcode_atts( array(
         'type' => 'one_time',
@@ -69,9 +66,6 @@ add_shortcode( 'donation_form', function( $atts ) {
     return ob_get_clean();
 });
 
-/**
- * Receipt Shortcode: [donation_receipt]
- */
 add_shortcode( 'donation_receipt', function() {
     if ( ! is_page( 'donation-success' ) ) {
         return '';
@@ -107,7 +101,7 @@ add_shortcode( 'donation_receipt', function() {
     } else if ( isset( $_GET['token'] ) || isset( $_GET['subscription_id'] ) ) {
         $first_name = isset( $_GET['fname'] ) ? sanitize_text_field( wp_unslash( $_GET['fname'] ) ) : 'Donor';
         $last_name  = isset( $_GET['lname'] ) ? sanitize_text_field( wp_unslash( $_GET['lname'] ) ) : '';
-        $email      = isset( $_GET['email'] ) ? sanitize_email( wp_unslash( $_GET['email'] ) ) : '';
+        $email      = isset( $_GET['email'] ) ? sanitize_email( $_GET['email'] ) : '';
         $amount     = isset( $_GET['amt'] ) ? number_format( floatval( $_GET['amt'] ), 2 ) : '0.00';
         $frequency  = isset( $_GET['subscription_id'] ) ? 'Monthly' : 'One-Time';
     }
