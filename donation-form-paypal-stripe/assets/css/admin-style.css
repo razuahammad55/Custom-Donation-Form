@@ -1,0 +1,38 @@
+/* ===========================
+   CDF PLUGIN ADMIN STYLES
+   ============================ */
+
+.wrap h1 {
+    font-size: 23px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 10px;
+}
+
+.form-table th {
+    font-weight: 600;
+    color: #334155;
+}
+
+.form-table td input[type="text"],
+.form-table td input[type="password"],
+.form-table td select {
+    border-color: #cbd5e1;
+    border-radius: 4px;
+    padding: 6px 10px;
+}
+
+.form-table td input[type="color"] {
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    width: 50px;
+    height: 35px;
+    cursor: pointer;
+    vertical-align: middle;
+    background: #fff;
+    padding: 2px;
+}
+
+.notice.is-dismissible {
+    border-left-color: #10b981;
+}
