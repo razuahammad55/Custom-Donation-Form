@@ -89,3 +89,16 @@
 .notice.is-dismissible {
     border-left-color: #10b981;
 }
+/* ===========================
+   CDF PLUGIN ADMIN STYLES
+   ============================ */
+
+.form-table th {
+    font-weight: 600;
+    color: #334155;
+    width: 240px;
+}
+
+.notice.is-dismissible {
+    border-left-color: #10b981;
+}
