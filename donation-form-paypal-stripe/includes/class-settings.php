@@ -3,9 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-/**
- * Register Sub-Menus under 'Donations' CPT (Order: Forms -> Analytics -> Style -> Email -> Settings)
- */
 add_action( 'admin_menu', function() {
     add_submenu_page(
         'edit.php?post_type=donation',
@@ -63,70 +60,43 @@ add_action( 'admin_init', function() {
 });
 
 /**
- * 1. FORMS PAGE RENDER (Includes Overview & API Key Setup Guide)
+ * 1. FORMS PAGE RENDER (Exact Grid Layout + API Key Guide)
  */
 function cdf_render_forms_page() {
     ?>
-    <div class="wrap cdf-admin-wrap">
-        <h1><?php esc_html_e( 'Donation Forms & Setup Guide', 'donation-form-paypal-stripe' ); ?></h1>
-        <p style="font-size: 15px; color: #475569;">Welcome to your Custom Donation Engine. Below is an overview of your plugin management panels and shortcode instructions.</p>
+    <div class="wrap" style="margin: 20px 20px 0 0;">
+        <h1 style="font-size: 23px; font-weight: 600; color: #1e293b; margin-bottom: 8px;"><?php esc_html_e( 'Donation Forms & Shortcodes', 'donation-form-paypal-stripe' ); ?></h1>
+        <p style="font-size: 14px; color: #64748b; margin-bottom: 20px;">Copy and paste these shortcodes onto any page or Elementor widget to display your donation forms.</p>
         
-        <!-- Panel Overview -->
-        <h2 style="margin-top: 25px;">Plugin Management Overview</h2>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 10px;">
-            <div class="cdf-card">
-                <h3>Donations</h3>
-                <p>View all logged transactions, download records, and examine individual donor payment metas.</p>
-            </div>
-            <div class="cdf-card">
-                <h3>Analytics</h3>
-                <p>Track total revenue, gateway comparisons (Stripe vs PayPal), and recurring subscription metrics.</p>
-            </div>
-            <div class="cdf-card">
-                <h3>Style</h3>
-                <p>Customize button colors, hover states, and active gateway styling using Elementor-like controls.</p>
-            </div>
-            <div class="cdf-card">
-                <h3>Email</h3>
-                <p>Configure admin notification recipients and custom HTML thank-you receipt emails for donors.</p>
-            </div>
-            <div class="cdf-card">
-                <h3>Settings</h3>
-                <p>Manage API keys for Stripe and PayPal and toggle between Sandbox test mode and Live production.</p>
-            </div>
-            <div class="cdf-card">
-                <h3>Forms</h3>
-                <p>Access shortcodes and integration guidelines for embedding donation forms across your site.</p>
-            </div>
-        </div>
-
-        <!-- Shortcodes Section -->
-        <h2 style="margin-top: 35px;">Frontend Form Shortcodes</h2>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px;">
-            <div class="cdf-card">
-                <h3 style="margin-top: 0; color: #1e293b;">One-Time Donation Form</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                <h3 style="margin-top: 0; color: #1e293b; font-size: 16px;">One-Time Donation Form</h3>
                 <p style="color: #64748b; font-size: 14px;">Renders a compact, high-converting one-time donation form supporting Stripe and PayPal.</p>
-                <div style="background: #f1f5f9; padding: 10px 14px; font-family: monospace; font-weight: bold; border-radius: 4px; margin-bottom: 12px;">[donation_form type="one_time"]</div>
-                <p style="font-size: 13px; color: #64748b;"><em>Note: You can also simply use <code>[donation_form]</code> since One-Time is the default type.</em></p>
+                <div style="background: #f1f5f9; padding: 10px 14px; font-family: monospace; font-weight: bold; border-radius: 4px; margin-bottom: 12px; color: #0f172a;">[donation_form type="one_time"]</div>
+                <p style="font-size: 13px; color: #64748b; margin-bottom: 0;">Note: You can also simply use <code>[donation_form]</code> since One-Time is the default type.</p>
             </div>
 
-            <div class="cdf-card">
-                <h3 style="margin-top: 0; color: #1e293b;">Monthly Recurring Donation Form</h3>
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                <h3 style="margin-top: 0; color: #1e293b; font-size: 16px;">Monthly Recurring Donation Form</h3>
                 <p style="color: #64748b; font-size: 14px;">Renders the monthly subscription donation form supporting Stripe Subscriptions and PayPal Plans.</p>
-                <div style="background: #f1f5f9; padding: 10px 14px; font-family: monospace; font-weight: bold; border-radius: 4px; margin-bottom: 12px;">[donation_form type="monthly"]</div>
-                <p style="font-size: 13px; color: #64748b;"><em>Ensure your PayPal Monthly Plan ID and Stripe Secret Key are configured under Settings.</em></p>
+                <div style="background: #f1f5f9; padding: 10px 14px; font-family: monospace; font-weight: bold; border-radius: 4px; margin-bottom: 12px; color: #0f172a;">[donation_form type="monthly"]</div>
+                <p style="font-size: 13px; color: #64748b; margin-bottom: 0;">Ensure your PayPal Monthly Plan ID and Stripe Secret Key are configured under Settings.</p>
             </div>
         </div>
 
-        <!-- API Key Setup Guide -->
-        <h2 style="margin-top: 35px;">Step-by-Step API Key Setup Guide</h2>
-        <div class="cdf-card" style="margin-top: 10px; line-height: 1.6;">
-            <ol style="margin: 0; padding-left: 20px;">
-                <li><strong>Navigate to Settings:</strong> Go to <strong>Donations > Settings</strong> in your WordPress sidebar.</li>
-                <li><strong>Choose Environment:</strong> Select <strong>Test / Sandbox</strong> while testing your checkout flow, or switch to <strong>Live / Production</strong> when ready to accept real donations.</li>
-                <li><strong>Stripe Setup:</strong> Log into your Stripe Dashboard, go to <em>Developers > API Keys</em>, and copy your <strong>Publishable Key</strong> (starts with <code>pk_</code>) and <strong>Secret Key</strong> (starts with <code>sk_</code>). Paste them into the corresponding fields in Settings.</li>
-                <li><strong>PayPal Setup:</strong> Log into the <a href="https://developer.paypal.com/" target="_blank">PayPal Developer Portal</a>, create a REST API app under your Apps & Credentials, and copy your <strong>Client ID</strong> and <strong>Secret Key</strong>.</li>
-                <li><strong>PayPal Monthly Plan ID:</strong> To accept recurring subscriptions via PayPal, create a billing plan in your PayPal dashboard and paste the resulting Plan ID into the <strong>PayPal Monthly Plan ID</strong> field.</li>
+        <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 16px; margin-bottom: 25px; color: #92400e;">
+            <strong>Setup Guide & Success Pages:</strong> Upon plugin activation, automatic pages for <code>/donation-success/</code> and <code>/donation-canceled/</code> were created. If you customize or delete these pages, ensure your new custom success page contains the <code>[donation_receipt]</code> shortcode so transactions log properly!
+        </div>
+
+        <!-- API Key Setup Instructions -->
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+            <h2 style="margin-top: 0; font-size: 18px; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px;">Step-by-Step API Key Configuration Guide</h2>
+            <ol style="margin: 15px 0 0 20px; color: #334155; line-height: 1.6;">
+                <li><strong>Access Settings:</strong> Go to <strong>Donations > Settings</strong> in your WordPress dashboard sidebar.</li>
+                <li><strong>Environment Mode:</strong> Select <strong>Test / Sandbox</strong> while testing transactions, or switch to <strong>Live / Production</strong> for real donor payments.</li>
+                <li><strong>Stripe Credentials:</strong> Log into your Stripe Dashboard, navigate to <em>Developers > API Keys</em>, and copy both your <strong>Publishable Key</strong> (<code>pk_...</code>) and <strong>Secret Key</strong> (<code>sk_...</code>). Paste them into the corresponding fields in Settings.</li>
+                <li><strong>PayPal Credentials:</strong> Access the <a href="https://developer.paypal.com/" target="_blank">PayPal Developer Dashboard</a>, create a REST API app under Apps & Credentials, and copy your <strong>Client ID</strong> and <strong>Secret Key</strong>.</li>
+                <li><strong>PayPal Monthly Plan ID:</strong> To enable recurring monthly subscriptions via PayPal, create a billing plan in your PayPal account and paste the resulting Plan ID into the <strong>PayPal Monthly Plan ID</strong> field.</li>
             </ol>
         </div>
     </div>
@@ -134,7 +104,7 @@ function cdf_render_forms_page() {
 }
 
 /**
- * 2. ANALYTICS PAGE RENDER (Revenue metrics dashboard)
+ * 2. ANALYTICS PAGE RENDER (Stylish Spaced Table Layout)
  */
 function cdf_render_analytics_page() {
     $donations = get_posts( array(
@@ -145,9 +115,11 @@ function cdf_render_analytics_page() {
 
     $total_revenue  = 0;
     $stripe_rev     = 0;
+    $stripe_onetime = 0;
+    $stripe_monthly = 0;
     $paypal_rev     = 0;
-    $onetime_rev    = 0;
-    $monthly_rev    = 0;
+    $paypal_onetime = 0;
+    $paypal_monthly = 0;
     $total_count    = count( $donations );
 
     foreach ( $donations as $post ) {
@@ -159,64 +131,93 @@ function cdf_render_analytics_page() {
 
         if ( 'Stripe' === $gateway ) {
             $stripe_rev += $amount;
+            if ( 'Monthly' === $frequency ) {
+                $stripe_monthly += $amount;
+            } else {
+                $stripe_onetime += $amount;
+            }
         } else if ( 'PayPal' === $gateway ) {
             $paypal_rev += $amount;
-        }
-
-        if ( 'Monthly' === $frequency ) {
-            $monthly_rev += $amount;
-        } else {
-            $onetime_rev += $amount;
+            if ( 'Monthly' === $frequency ) {
+                $paypal_monthly += $amount;
+            } else {
+                $paypal_onetime += $amount;
+            }
         }
     }
     ?>
-    <div class="wrap cdf-admin-wrap">
-        <h1><?php esc_html_e( 'Donation Analytics & Revenue Reports', 'donation-form-paypal-stripe' ); ?></h1>
-        <p style="font-size: 15px; color: #475569;">Overview of financial performance and transaction volume across all payment gateways.</p>
+    <div class="wrap" style="margin: 20px 20px 0 0;">
+        <h1 style="font-size: 23px; font-weight: 600; color: #1e293b; margin-bottom: 8px;"><?php esc_html_e( 'Donation Analytics & Revenue Reports', 'donation-form-paypal-stripe' ); ?></h1>
+        <p style="font-size: 14px; color: #64748b; margin-bottom: 25px;">Comprehensive financial overview and transaction metrics.</p>
 
-        <!-- Top Row: Total Revenue & Total Donations -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
-            <div class="cdf-metric-box" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #fff;">
-                <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">Total Revenue Generated</span>
-                <h2 style="font-size: 36px; margin: 8px 0 0 0; color: #fff;">$<?php echo number_format( $total_revenue, 2 ); ?></h2>
-            </div>
-            <div class="cdf-metric-box" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: #fff;">
-                <span style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.9;">Total Completed Donations</span>
-                <h2 style="font-size: 36px; margin: 8px 0 0 0; color: #fff;"><?php echo intval( $total_count ); ?></h2>
-            </div>
+        <!-- Total Completed Donations Banner -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 24px; margin-bottom: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 15px; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;">Total Completed Donations</span>
+            <span style="font-size: 26px; font-weight: 700; color: #10b981;"><?php echo intval( $total_count ); ?></span>
         </div>
 
-        <!-- Middle Row: Gateway Breakdown (Stripe vs PayPal) -->
-        <h2 style="margin-top: 35px;">Gateway Breakdown</h2>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px;">
-            <div class="cdf-card">
-                <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b;">Stripe Revenue</span>
-                <h3 style="font-size: 28px; margin: 6px 0 0 0; color: #1e293b;">$<?php echo number_format( $stripe_rev, 2 ); ?></h3>
+        <!-- Stylish Table Card -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 28px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+            
+            <!-- Row 1: Total Revenue Generated -->
+            <div style="text-align: center; padding-bottom: 28px; border-bottom: 1px solid #e2e8f0; margin-bottom: 28px;">
+                <span style="font-size: 13px; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">Total Revenue Generated</span>
+                <h2 style="font-size: 38px; font-weight: 800; color: #1e293b; margin: 0;">$<?php echo number_format( $total_revenue, 2 ); ?></h2>
             </div>
-            <div class="cdf-card">
-                <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b;">PayPal Revenue</span>
-                <h3 style="font-size: 28px; margin: 6px 0 0 0; color: #1e293b;">$<?php echo number_format( $paypal_rev, 2 ); ?></h3>
-            </div>
-        </div>
 
-        <!-- Bottom Row: Frequency Breakdown (One-Time vs Monthly) -->
-        <h2 style="margin-top: 35px;">Frequency Breakdown</h2>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px;">
-            <div class="cdf-card">
-                <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b;">One-Time Donations</span>
-                <h3 style="font-size: 28px; margin: 6px 0 0 0; color: #1e293b;">$<?php echo number_format( $onetime_rev, 2 ); ?></h3>
+            <!-- Header: Gateway Breakdown -->
+            <div style="margin-bottom: 20px;">
+                <h3 style="font-size: 16px; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">Gateway Breakdown</h3>
             </div>
-            <div class="cdf-card">
-                <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: #64748b;">Monthly Recurring Subscriptions</span>
-                <h3 style="font-size: 28px; margin: 6px 0 0 0; color: #1e293b;">$<?php echo number_format( $monthly_rev, 2 ); ?></h3>
+
+            <!-- Two Columns Below: Stripe vs PayPal -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                
+                <!-- Stripe Column -->
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px;">
+                        <span style="font-weight: 700; color: #1e293b; font-size: 16px;">Stripe Revenue</span>
+                        <strong style="font-size: 20px; color: #3182ce;">$<?php echo number_format( $stripe_rev, 2 ); ?></strong>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
+                        <div style="background: #fff; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                            <span style="display: block; font-size: 11px; text-transform: uppercase; color: #64748b; margin-bottom: 4px;">One-Time</span>
+                            <strong style="color: #0f172a; font-size: 15px;">$<?php echo number_format( $stripe_onetime, 2 ); ?></strong>
+                        </div>
+                        <div style="background: #fff; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                            <span style="display: block; font-size: 11px; text-transform: uppercase; color: #64748b; margin-bottom: 4px;">Monthly</span>
+                            <strong style="color: #0f172a; font-size: 15px;">$<?php echo number_format( $stripe_monthly, 2 ); ?></strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PayPal Column -->
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px;">
+                        <span style="font-weight: 700; color: #1e293b; font-size: 16px;">PayPal Revenue</span>
+                        <strong style="font-size: 20px; color: #0070ba;">$<?php echo number_format( $paypal_rev, 2 ); ?></strong>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
+                        <div style="background: #fff; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                            <span style="display: block; font-size: 11px; text-transform: uppercase; color: #64748b; margin-bottom: 4px;">One-Time</span>
+                            <strong style="color: #0f172a; font-size: 15px;">$<?php echo number_format( $paypal_onetime, 2 ); ?></strong>
+                        </div>
+                        <div style="background: #fff; padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                            <span style="display: block; font-size: 11px; text-transform: uppercase; color: #64748b; margin-bottom: 4px;">Monthly</span>
+                            <strong style="color: #0f172a; font-size: 15px;">$<?php echo number_format( $paypal_monthly, 2 ); ?></strong>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
         </div>
     </div>
     <?php
 }
 
 /**
- * 3. STYLE PAGE RENDER (Elementor-Style Tabbed Control Panel)
+ * 3. STYLE PAGE RENDER (Modern, Clean, 3 Sections with Hex Input & Border Radius)
  */
 function cdf_render_style_page() {
     if ( isset( $_POST['cdf_save_styles'] ) && check_admin_referer( 'cdf_style_nonce' ) ) {
@@ -230,108 +231,146 @@ function cdf_render_style_page() {
         return isset( $styles[$key] ) ? $styles[$key] : $default;
     };
     ?>
-    <div class="wrap cdf-admin-wrap">
-        <h1><?php esc_html_e( 'Donation Form Custom Styling', 'donation-form-paypal-stripe' ); ?></h1>
+    <div class="wrap" style="margin: 20px 20px 0 0;">
+        <h1 style="font-size: 23px; font-weight: 600; color: #1e293b; margin-bottom: 8px;"><?php esc_html_e( 'Donation Form Custom Styling', 'donation-form-paypal-stripe' ); ?></h1>
+        <p style="font-size: 14px; color: #64748b; margin-bottom: 20px;">Customize button colors, hover/active states, and geometric border radius.</p>
+        
         <form method="POST" action="">
             <?php wp_nonce_field( 'cdf_style_nonce' ); ?>
             
-            <div class="cdf-card" style="margin-top: 20px;">
-                <h2 style="margin-top: 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px;">Elementor-Style Color Controls</h2>
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
                 
-                <!-- Elementor-style Tabbed State Control -->
-                <div class="cdf-style-tabs">
-                    <button type="button" class="cdf-tab-btn active" data-tab="normal">Normal State</button>
-                    <button type="button" class="cdf-tab-btn" data-tab="hover">Hover State</button>
-                    <button type="button" class="cdf-tab-btn" data-tab="active">Active / Selected State</button>
+                <!-- Global Geometry: Border Radius -->
+                <div style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #e2e8f0;">
+                    <label style="display: block; font-weight: 600; color: #334155; margin-bottom: 6px;">Global Border Radius (px)</label>
+                    <input type="number" name="cdf_style_options[border_radius]" value="<?php echo esc_attr( $s('border_radius', '8') ); ?>" min="0" max="30" style="width: 100px; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                    <span style="font-size: 13px; color: #64748b; margin-left: 10px;">Applies rounded corners to buttons, input fields, and gateway cards.</span>
+                </div>
+
+                <!-- Elementor-Style Tabbed State Control -->
+                <div style="display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid #e2e8f0; padding-bottom: 14px;">
+                    <button type="button" class="cdf-tab-btn active" data-tab="normal" style="background: #3182ce; color: #fff; border: none; padding: 10px 20px; font-size: 14px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Normal State</button>
+                    <button type="button" class="cdf-tab-btn" data-tab="hover" style="background: #f1f5f9; color: #475569; border: none; padding: 10px 20px; font-size: 14px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Hover State</button>
+                    <button type="button" class="cdf-tab-btn" data-tab="active" style="background: #f1f5f9; color: #475569; border: none; padding: 10px 20px; font-size: 14px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Active State</button>
                 </div>
 
                 <!-- Tab 1: Normal State -->
-                <div class="cdf-tab-pane active" id="tab-normal">
+                <div class="cdf-tab-pane" id="tab-normal">
+                    <h3 style="font-size: 16px; color: #1e293b; margin-top: 0;">1. Amount Button</h3>
+                    <table class="form-table" style="margin-bottom: 20px;">
+                        <tr>
+                            <th scope="row">Background Color</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[amt_bg_normal]', $s('amt_bg_normal', '#f7fafc') ); ?></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Text Color</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[amt_text_normal]', $s('amt_text_normal', '#2d3748') ); ?></td>
+                        </tr>
+                    </table>
+
+                    <h3 style="font-size: 16px; color: #1e293b;">2. Gateway Card</h3>
+                    <table class="form-table" style="margin-bottom: 20px;">
+                        <tr>
+                            <th scope="row">Background Color</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[gw_bg_normal]', $s('gw_bg_normal', '#ffffff') ); ?></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Text Color</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[gw_text_normal]', $s('gw_text_normal', '#2d3748') ); ?></td>
+                        </tr>
+                    </table>
+
+                    <h3 style="font-size: 16px; color: #1e293b;">3. Submit Button</h3>
                     <table class="form-table">
                         <tr>
-                            <th scope="row">Amount Button Background</th>
-                            <td><input type="color" name="cdf_style_options[amt_bg_normal]" value="<?php echo esc_attr( $s('amt_bg_normal', '#f7fafc') ); ?>"></td>
+                            <th scope="row">Background Color</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[sub_bg_normal]', $s('sub_bg_normal', '#3182ce') ); ?></td>
                         </tr>
                         <tr>
-                            <th scope="row">Amount Button Text Color</th>
-                            <td><input type="color" name="cdf_style_options[amt_text_normal]" value="<?php echo esc_attr( $s('amt_text_normal', '#2d3748') ); ?>"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Gateway Card Background</th>
-                            <td><input type="color" name="cdf_style_options[gw_bg_normal]" value="<?php echo esc_attr( $s('gw_bg_normal', '#ffffff') ); ?>"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Gateway Card Text Color</th>
-                            <td><input type="color" name="cdf_style_options[gw_text_normal]" value="<?php echo esc_attr( $s('gw_text_normal', '#2d3748') ); ?>"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Submit Button Background</th>
-                            <td><input type="color" name="cdf_style_options[sub_bg_normal]" value="<?php echo esc_attr( $s('sub_bg_normal', '#3182ce') ); ?>"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Submit Button Text Color</th>
-                            <td><input type="color" name="cdf_style_options[sub_text_normal]" value="<?php echo esc_attr( $s('sub_text_normal', '#ffffff') ); ?>"></td>
+                            <th scope="row">Text Color</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[sub_text_normal]', $s('sub_text_normal', '#ffffff') ); ?></td>
                         </tr>
                     </table>
                 </div>
 
                 <!-- Tab 2: Hover State -->
                 <div class="cdf-tab-pane" id="tab-hover" style="display: none;">
+                    <h3 style="font-size: 16px; color: #1e293b; margin-top: 0;">1. Amount Button</h3>
+                    <table class="form-table" style="margin-bottom: 20px;">
+                        <tr>
+                            <th scope="row">Background Color (Hover)</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[amt_bg_hover]', $s('amt_bg_hover', '#edf2f7') ); ?></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Text Color (Hover)</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[amt_text_hover]', $s('amt_text_hover', '#2d3748') ); ?></td>
+                        </tr>
+                    </table>
+
+                    <h3 style="font-size: 16px; color: #1e293b;">2. Gateway Card</h3>
+                    <table class="form-table" style="margin-bottom: 20px;">
+                        <tr>
+                            <th scope="row">Background Color (Hover)</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[gw_bg_hover]', $s('gw_bg_hover', '#f7fafc') ); ?></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Text Color (Hover)</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[gw_text_hover]', $s('gw_text_hover', '#2d3748') ); ?></td>
+                        </tr>
+                    </table>
+
+                    <h3 style="font-size: 16px; color: #1e293b;">3. Submit Button</h3>
                     <table class="form-table">
                         <tr>
-                            <th scope="row">Amount Button Background (Hover)</th>
-                            <td><input type="color" name="cdf_style_options[amt_bg_hover]" value="<?php echo esc_attr( $s('amt_bg_hover', '#edf2f7') ); ?>"></td>
+                            <th scope="row">Background Color (Hover)</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[sub_bg_hover]', $s('sub_bg_hover', '#2b6cb0') ); ?></td>
                         </tr>
                         <tr>
-                            <th scope="row">Amount Button Text Color (Hover)</th>
-                            <td><input type="color" name="cdf_style_options[amt_text_hover]" value="<?php echo esc_attr( $s('amt_text_hover', '#2d3748') ); ?>"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Gateway Card Background (Hover)</th>
-                            <td><input type="color" name="cdf_style_options[gw_bg_hover]" value="<?php echo esc_attr( $s('gw_bg_hover', '#f7fafc') ); ?>"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Gateway Card Text Color (Hover)</th>
-                            <td><input type="color" name="cdf_style_options[gw_text_hover]" value="<?php echo esc_attr( $s('gw_text_hover', '#2d3748') ); ?>"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Submit Button Background (Hover)</th>
-                            <td><input type="color" name="cdf_style_options[sub_bg_hover]" value="<?php echo esc_attr( $s('sub_bg_hover', '#2b6cb0') ); ?>"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Submit Button Text Color (Hover)</th>
-                            <td><input type="color" name="cdf_style_options[sub_text_hover]" value="<?php echo esc_attr( $s('sub_text_hover', '#ffffff') ); ?>"></td>
+                            <th scope="row">Text Color (Hover)</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[sub_text_hover]', $s('sub_text_hover', '#ffffff') ); ?></td>
                         </tr>
                     </table>
                 </div>
 
                 <!-- Tab 3: Active State -->
                 <div class="cdf-tab-pane" id="tab-active" style="display: none;">
+                    <h3 style="font-size: 16px; color: #1e293b; margin-top: 0;">1. Amount Button</h3>
+                    <table class="form-table" style="margin-bottom: 20px;">
+                        <tr>
+                            <th scope="row">Background Color (Active)</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[amt_bg_active]', $s('amt_bg_active', '#ebf8ff') ); ?></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Text Color (Active)</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[amt_text_active]', $s('amt_text_active', '#2b6cb0') ); ?></td>
+                        </tr>
+                    </table>
+
+                    <h3 style="font-size: 16px; color: #1e293b;">2. Gateway Card</h3>
+                    <table class="form-table" style="margin-bottom: 20px;">
+                        <tr>
+                            <th scope="row">Background Color (Active)</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[gw_bg_active]', $s('gw_bg_active', '#ebf8ff') ); ?></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Text Color (Active)</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[gw_text_active]', $s('gw_text_active', '#2b6cb0') ); ?></td>
+                        </tr>
+                    </table>
+
+                    <h3 style="font-size: 16px; color: #1e293b;">3. Submit Button</h3>
                     <table class="form-table">
                         <tr>
-                            <th scope="row">Amount Button Background (Active)</th>
-                            <td><input type="color" name="cdf_style_options[amt_bg_active]" value="<?php echo esc_attr( $s('amt_bg_active', '#ebf8ff') ); ?>"></td>
+                            <th scope="row">Background Color (Active)</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[sub_bg_active]', $s('sub_bg_active', '#2b6cb0') ); ?></td>
                         </tr>
                         <tr>
-                            <th scope="row">Amount Button Text & Border (Active)</th>
-                            <td>
-                                <input type="color" name="cdf_style_options[amt_text_active]" value="<?php echo esc_attr( $s('amt_text_active', '#2b6cb0') ); ?>">
-                                <input type="hidden" name="cdf_style_options[amt_border_active]" value="#3182ce">
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Gateway Card Background (Active)</th>
-                            <td><input type="color" name="cdf_style_options[gw_bg_active]" value="<?php echo esc_attr( $s('gw_bg_active', '#ebf8ff') ); ?>"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Gateway Card Text Color (Active)</th>
-                            <td>
-                                <input type="color" name="cdf_style_options[gw_text_active]" value="<?php echo esc_attr( $s('gw_text_active', '#2b6cb0') ); ?>">
-                                <input type="hidden" name="cdf_style_options[gw_border_active]" value="#3182ce">
-                            </td>
+                            <th scope="row">Text Color (Active)</th>
+                            <td><?php cdf_render_color_picker( 'cdf_style_options[sub_text_active]', $s('sub_text_active', '#ffffff') ); ?></td>
                         </tr>
                     </table>
                 </div>
+
             </div>
 
             <?php submit_button( 'Save Style Settings', 'primary', 'cdf_save_styles' ); ?>
@@ -346,10 +385,17 @@ function cdf_render_style_page() {
         tabBtns.forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
-                tabBtns.forEach(b => b.classList.remove('active'));
+                tabBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.style.background = '#f1f5f9';
+                    b.style.color = '#475569';
+                });
                 tabPanes.forEach(p => p.style.display = 'none');
 
                 this.classList.add('active');
+                this.style.background = '#3182ce';
+                this.style.color = '#ffffff';
+
                 const target = document.getElementById('tab-' + this.getAttribute('data-tab'));
                 if (target) {
                     target.style.display = 'block';
@@ -358,6 +404,18 @@ function cdf_render_style_page() {
         });
     });
     </script>
+    <?php
+}
+
+/**
+ * Helper: Render Color Picker with Hex Code Support
+ */
+function cdf_render_color_picker( $name, $value ) {
+    ?>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <input type="color" value="<?php echo esc_attr( $value ); ?>" oninput="this.nextElementSibling.value = this.value" style="width: 50px; height: 35px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; background: #fff; padding: 2px;">
+        <input type="text" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( $value ); ?>" class="regular-text" style="width: 120px; font-family: monospace;" oninput="this.previousElementSibling.value = this.value">
+    </div>
     <?php
 }
 
@@ -376,11 +434,11 @@ function cdf_render_email_page() {
     $donor_enabled = get_option( 'cdf_donor_email_enabled', '1' );
     $recipients    = get_option( 'cdf_admin_email_recipients', get_option( 'admin_email' ) );
     ?>
-    <div class="wrap cdf-admin-wrap">
-        <h1><?php esc_html_e( 'Email Notification Settings', 'donation-form-paypal-stripe' ); ?></h1>
+    <div class="wrap" style="margin: 20px 20px 0 0;">
+        <h1 style="font-size: 23px; font-weight: 600; color: #1e293b; margin-bottom: 8px;"><?php esc_html_e( 'Email Notification Settings', 'donation-form-paypal-stripe' ); ?></h1>
         <form method="POST" action="">
             <?php wp_nonce_field( 'cdf_email_nonce' ); ?>
-            <div class="cdf-card" style="margin-top: 20px;">
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
                 <table class="form-table">
                     <tr>
                         <th scope="row">Admin Email Notification</th>
@@ -391,7 +449,7 @@ function cdf_render_email_page() {
                             </label>
                             <div id="admin_email_box" style="margin-top: 12px; display: <?php echo ( '1' === $admin_enabled ) ? 'block' : 'none'; ?>;">
                                 <label style="display:block; font-weight:600; margin-bottom:4px;">Recipient Email Address(es)</label>
-                                <input type="text" name="cdf_admin_email_recipients" value="<?php echo esc_attr( $recipients ); ?>" class="regular-text">
+                                <input type="text" name="cdf_admin_email_recipients" value="<?php echo esc_attr( $recipients ); ?>" class="regular-text" style="width: 100%; max-width: 450px;">
                                 <p class="description">Default is your WordPress admin email. Separate multiple email addresses with commas (e.g. admin@site.com, finance@site.com).</p>
                             </div>
                         </td>
@@ -414,7 +472,7 @@ function cdf_render_email_page() {
 }
 
 /**
- * 5. SETTINGS PAGE RENDER (Includes Stripe Publishable & Secret Keys, PayPal Credentials, & Plan ID)
+ * 5. SETTINGS PAGE RENDER
  */
 function cdf_render_settings_page() {
     if ( isset( $_POST['cdf_save_settings'] ) && check_admin_referer( 'cdf_settings_nonce' ) ) {
@@ -439,16 +497,16 @@ function cdf_render_settings_page() {
     $paypal_sec = isset( $settings['paypal_secret'] ) ? $settings['paypal_secret'] : '';
     $paypal_plan = isset( $settings['paypal_plan_id'] ) ? $settings['paypal_plan_id'] : '';
     ?>
-    <div class="wrap cdf-admin-wrap">
-        <h1><?php esc_html_e( 'Gateway API Settings', 'donation-form-paypal-stripe' ); ?></h1>
+    <div class="wrap" style="margin: 20px 20px 0 0;">
+        <h1 style="font-size: 23px; font-weight: 600; color: #1e293b; margin-bottom: 8px;"><?php esc_html_e( 'Gateway API Settings', 'donation-form-paypal-stripe' ); ?></h1>
         <form method="POST" action="">
             <?php wp_nonce_field( 'cdf_settings_nonce' ); ?>
-            <div class="cdf-card" style="margin-top: 20px;">
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
                 <table class="form-table">
                     <tr>
                         <th scope="row">Environment Mode</th>
                         <td>
-                            <select name="cdf_environment" class="regular-text">
+                            <select name="cdf_environment" class="regular-text" style="width: 100%; max-width: 450px;">
                                 <option value="sandbox" <?php selected( $env, 'sandbox' ); ?>>Test / Sandbox (API Test Mode)</option>
                                 <option value="live" <?php selected( $env, 'live' ); ?>>Live / Production</option>
                             </select>
@@ -457,35 +515,35 @@ function cdf_render_settings_page() {
                     <tr>
                         <th scope="row">Stripe Publishable Key</th>
                         <td>
-                            <input type="text" name="cdf_stripe_publishable" value="<?php echo esc_attr( $stripe_pub ); ?>" class="regular-text">
+                            <input type="text" name="cdf_stripe_publishable" value="<?php echo esc_attr( $stripe_pub ); ?>" class="regular-text" style="width: 100%; max-width: 450px;">
                             <p class="description">Enter your Stripe Publishable API Key (starts with pk_test_ or pk_live_).</p>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">Stripe Secret Key</th>
                         <td>
-                            <input type="password" name="cdf_stripe_secret" value="<?php echo esc_attr( $stripe_sec ); ?>" class="regular-text" autocomplete="new-password">
+                            <input type="password" name="cdf_stripe_secret" value="<?php echo esc_attr( $stripe_sec ); ?>" class="regular-text" autocomplete="new-password" style="width: 100%; max-width: 450px;">
                             <p class="description">Enter your Stripe Secret API Key (starts with sk_test_ or sk_live_).</p>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">PayPal Client ID</th>
                         <td>
-                            <input type="text" name="cdf_paypal_client" value="<?php echo esc_attr( $paypal_client ); ?>" class="regular-text">
+                            <input type="text" name="cdf_paypal_client" value="<?php echo esc_attr( $paypal_client ); ?>" class="regular-text" style="width: 100%; max-width: 450px;">
                             <p class="description">Enter your PayPal REST API Client ID.</p>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">PayPal Secret Key</th>
                         <td>
-                            <input type="password" name="cdf_paypal_secret" value="<?php echo esc_attr( $paypal_sec ); ?>" class="regular-text" autocomplete="new-password">
+                            <input type="password" name="cdf_paypal_secret" value="<?php echo esc_attr( $paypal_sec ); ?>" class="regular-text" autocomplete="new-password" style="width: 100%; max-width: 450px;">
                             <p class="description">Enter your PayPal REST API Secret Key.</p>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">PayPal Monthly Plan ID</th>
                         <td>
-                            <input type="text" name="cdf_paypal_plan_id" value="<?php echo esc_attr( $paypal_plan ); ?>" class="regular-text">
+                            <input type="text" name="cdf_paypal_plan_id" value="<?php echo esc_attr( $paypal_plan ); ?>" class="regular-text" style="width: 100%; max-width: 450px;">
                             <p class="description">Enter your PayPal Billing Plan ID for monthly subscriptions. Note: This utilizes quantity-based pricing ($1 per unit multiplier).</p>
                         </td>
                     </tr>
