@@ -5,9 +5,9 @@
 .styled-donation-container {
     max-width: 520px;
     margin: 0 auto;
-    padding: 18px 20px;
+    padding: 22px 24px;
     background: #ffffff;
-    border-radius: 12px;
+    border-radius: calc(var(--cdf-border-radius) + 4px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     box-sizing: border-box;
@@ -23,22 +23,22 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: #4a5568;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .amount-btn-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 body .styled-donation-container .amt-btn {
-    padding: 8px 12px !important;
+    padding: 10px 12px !important;
     background: var(--amt-btn-bg-normal) !important;
     color: var(--amt-btn-text-normal) !important;
     border: 2px solid #e2e8f0 !important;
-    border-radius: 8px !important;
+    border-radius: var(--cdf-border-radius) !important;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
@@ -57,19 +57,19 @@ body .styled-donation-container .amt-btn:hover {
 body .styled-donation-container .amt-btn.active {
     background: var(--amt-btn-bg-active) !important;
     color: var(--amt-btn-text-active) !important;
-    border-color: var(--amt-border-active) !important;
+    border-color: var(--amt-btn-text-active) !important;
 }
 
 .input-amount-wrapper {
     position: relative;
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .currency-prefix {
     position: absolute;
-    left: 12px;
+    left: 14px;
     font-size: 16px;
     font-weight: 600;
     color: #718096;
@@ -78,7 +78,7 @@ body .styled-donation-container .amt-btn.active {
 
 .currency-suffix {
     position: absolute;
-    right: 12px;
+    right: 14px;
     font-size: 13px;
     font-weight: 600;
     color: #a0aec0;
@@ -94,14 +94,14 @@ body .styled-donation-container select {
     background-color: #ffffff !important;
     color: #2d3748 !important;
     border: 2px solid #e2e8f0 !important;
-    border-radius: 8px !important;
+    border-radius: var(--cdf-border-radius) !important;
     box-shadow: none !important;
     outline: none !important;
 }
 
 .input-amount-wrapper input[type="number"] {
     width: 100%;
-    padding: 8px 45px 8px 28px !important;
+    padding: 10px 45px 10px 32px !important;
     font-size: 16px;
     font-weight: 600;
     transition: border-color 0.2s ease;
@@ -114,18 +114,18 @@ body .styled-donation-container select {
 .donor-name-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 8px;
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
 .donor-full-row {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .donor-full-row input,
 .donor-name-row input {
     width: 100%;
-    padding: 8px 12px !important;
+    padding: 10px 14px !important;
     font-size: 14px;
     transition: border-color 0.2s ease;
 }
@@ -138,19 +138,19 @@ body .styled-donation-container select {
 .gateway-selection-block {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 8px;
-    margin-bottom: 24px;
+    gap: 10px;
+    margin-bottom: 25px;
 }
 
 body .styled-donation-container .gateway-row {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding: 10px 14px;
+    padding: 12px 16px;
     background: var(--gateway-bg-normal) !important;
     color: var(--gateway-text-normal) !important;
     border: 2px solid #e2e8f0 !important;
-    border-radius: 8px !important;
+    border-radius: var(--cdf-border-radius) !important;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -164,11 +164,11 @@ body .styled-donation-container .gateway-row:hover {
 body .styled-donation-container .gateway-row.active {
     background: var(--gateway-bg-active) !important;
     color: var(--gateway-text-active) !important;
-    border-color: var(--gateway-border-active) !important;
+    border-color: var(--gateway-text-active) !important;
 }
 
 .gateway-row input[type="radio"] {
-    margin-right: 10px;
+    margin-right: 12px;
     border-radius: 50% !important;
     cursor: pointer;
 }
@@ -181,11 +181,11 @@ body .styled-donation-container .gateway-row.active {
 
 body .styled-donation-container .donation-submit-trigger {
     width: 100%;
-    padding: 12px 16px !important;
+    padding: 14px 16px !important;
     background: var(--submit-btn-bg-normal) !important;
     color: var(--submit-btn-text-normal) !important;
     border: none !important;
-    border-radius: 8px !important;
+    border-radius: var(--cdf-border-radius) !important;
     font-size: 16px;
     font-weight: 700;
     cursor: pointer !important;
