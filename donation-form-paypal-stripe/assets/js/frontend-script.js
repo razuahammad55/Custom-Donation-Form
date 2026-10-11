@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const amountInput = form.querySelector('.donation-amount-input');
         const gatewayRows = form.querySelectorAll('.gateway-row');
 
-        // Handle preset amount button clicks
         amtButtons.forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -19,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        // Handle manual typing in custom amount input field
         if (amountInput) {
             amountInput.addEventListener('input', function() {
                 amtButtons.forEach(btn => {
@@ -32,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // Handle payment gateway selection card state switches
         gatewayRows.forEach(row => {
             row.addEventListener('click', function(e) {
                 gatewayRows.forEach(r => r.classList.remove('active'));
