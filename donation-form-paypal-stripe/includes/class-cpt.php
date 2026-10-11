@@ -3,9 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-/**
- * Register 'donation' Custom Post Type
- */
 function cdf_register_donation_cpt() {
     if ( ! post_type_exists( 'donation' ) ) {
         register_post_type( 'donation', array(
@@ -36,9 +33,6 @@ function cdf_register_donation_cpt() {
 }
 add_action( 'init', 'cdf_register_donation_cpt' );
 
-/**
- * Admin List Columns
- */
 add_filter( 'manage_donation_posts_columns', function( $columns ) {
     return array(
         'cb'          => '<input type="checkbox" />',
@@ -80,9 +74,6 @@ add_action( 'manage_donation_posts_custom_column', function( $column, $post_id )
     }
 }, 10, 2 );
 
-/**
- * Detailed Metabox on Edit Screen
- */
 add_action( 'add_meta_boxes', function() {
     add_meta_box(
         'donation_details_metabox',
