@@ -23,7 +23,6 @@ function cdf_send_notification_emails( $post_id ) {
     $site_name   = get_bloginfo( 'name' );
     $admin_email = get_option( 'admin_email' );
 
-    // 1. ADMIN EMAIL NOTIFICATION
     $admin_enabled = get_option( 'cdf_admin_email_enabled', '1' );
     if ( '1' === $admin_enabled ) {
         $recipients_str = get_option( 'cdf_admin_email_recipients', $admin_email );
@@ -76,7 +75,6 @@ function cdf_send_notification_emails( $post_id ) {
         }
     }
 
-    // 2. DONOR THANK YOU EMAIL
     $donor_enabled = get_option( 'cdf_donor_email_enabled', '1' );
     if ( '1' === $donor_enabled && ! empty( $email ) ) {
         $full_name = trim( $first_name . ' ' . $last_name );
