@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Donation Form with PayPal and Stripe
  * Plugin URI:  https://github.com/razu/donation-form-paypal-stripe
- * Description: A secure, modular WordPress donation plugin supporting Stripe Checkout and PayPal REST API for One-Time and Monthly Recurring donations with custom admin management, styling options, and email notifications.
- * Version:     1.1.0
+ * Description: A secure, modular WordPress donation plugin supporting Stripe Checkout and PayPal REST API for One-Time and Monthly Recurring donations with custom admin management, analytics, styling options, and email notifications.
+ * Version:     1.2.0
  * Author:      Razu Ahammad
  * Text Domain: donation-form-paypal-stripe
  */
@@ -12,7 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Define Plugin Constants with cdf prefix
 define( 'CDF_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CDF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -27,7 +26,6 @@ function cdf_plugin_activate() {
     }
     flush_rewrite_rules();
 
-    // Automatically Create Success & Cancel Pages if they don't exist
     if ( ! get_page_by_path( 'donation-success' ) ) {
         wp_insert_post( array(
             'post_title'     => 'Donation Success',
@@ -48,7 +46,6 @@ function cdf_plugin_activate() {
         ) );
     }
 
-    // Initialize Default Settings & Toggles with cdf prefix
     if ( false === get_option( 'cdf_admin_email_enabled' ) ) {
         update_option( 'cdf_admin_email_enabled', '1' );
     }
@@ -63,9 +60,6 @@ function cdf_plugin_activate() {
     }
 }
 
-/**
- * Deactivation Hook
- */
 register_deactivation_hook( __FILE__, 'cdf_plugin_deactivate' );
 function cdf_plugin_deactivate() {
     flush_rewrite_rules();
@@ -85,8 +79,8 @@ require_once CDF_PLUGIN_DIR . 'includes/class-settings.php';
  */
 add_action( 'wp_enqueue_scripts', 'cdf_enqueue_frontend_assets' );
 function cdf_enqueue_frontend_assets() {
-    wp_enqueue_style( 'cdf-frontend-style', CDF_PLUGIN_URL . 'assets/css/frontend-style.css', array(), '1.1.0' );
-    wp_enqueue_script( 'cdf-frontend-script', CDF_PLUGIN_URL . 'assets/js/frontend-script.js', array(), '1.1.0', true );
+    wp_enqueue_style( 'cdf-frontend-style', CDF_PLUGIN_URL . 'assets/css/frontend-style.css', array(), '1.2.0' );
+    wp_enqueue_script( 'cdf-frontend-script', CDF_PLUGIN_URL . 'assets/js/frontend-script.js', array(), '1.2.0', true );
 
     $custom_css = cdf_generate_dynamic_css();
     wp_add_inline_style( 'cdf-frontend-style', $custom_css );
